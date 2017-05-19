@@ -172,6 +172,7 @@
   // until the second element, with the first element as its second argument.
   //
   // Example:
+  //
   //   var numbers = [1,2,3];
   //   var sum = _.reduce(numbers, function(total, number){
   //     return total + number;
@@ -182,7 +183,7 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
-    if(Array.isArray(collection)) {
+    if (Array.isArray(collection)) {
       var start = 0;
       if (accumulator === undefined) {
         accumulator = collection[0];
