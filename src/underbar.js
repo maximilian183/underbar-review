@@ -87,8 +87,8 @@
   _.filter = function(collection, test) {
     var returnArr = [];
 
-    for( var i = 0; i < collection.length; i++){
-      if( test(collection[i])) {
+    for ( var i = 0; i < collection.length; i++) {
+      if ( test(collection[i])) {
         returnArr.push(collection[i]);
       }
     }
@@ -100,8 +100,8 @@
   _.reject = function(collection, test) {
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
-    return _.filter(collection, function(item){
-      if(test(item) === false){
+    return _.filter(collection, function(item) {
+      if (test(item) === false) {
         return true;
       }
     });
@@ -112,7 +112,7 @@
     var sortedArr = array.sort();
     var returnArr = [sortedArr[0]];
     for (var i = 1; i < sortedArr.length; i++) {
-      if( sortedArr[i] === sortedArr[i-1]) {
+      if ( sortedArr[i] === sortedArr[i-1]) {
         //do nothing
       } else {
         returnArr.push(sortedArr[i]);
@@ -216,13 +216,35 @@
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
-    // TIP: Try re-using reduce() here.
+
+    if (arguments[1] === undefined) {
+      iterator = _.identity;
+    }
+    for ( var i = 0; i < collection.length; i++) {
+      if (!iterator(collection[i])) {
+        return false;
+      }
+    }
+
+    return true;
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    if (arguments[1] === undefined) {
+      iterator = _.identity;
+    }
+
+    for ( var i = 0; i < collection.length; i++) {
+      if (iterator(collection[i])) {
+        return true;
+      }
+    }
+
+    return false;
+
   };
 
 
@@ -245,11 +267,25 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    for ( var i = 1; i < arguments.length; i++ ) {
+      for ( var x in arguments[i] ) {
+        obj[x] = arguments[i][x];
+      }
+    }
+    return obj;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    for ( var i = 1; i < arguments.length; i++ ) {
+      for ( var x in arguments[i] ) {
+        if ( obj[x] === undefined ) {
+          obj[x] = arguments[i][x];
+        }
+      }
+    }
+    return obj;
   };
 
 
@@ -293,6 +329,21 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    var argumentsList = {};
+    return function() {
+
+      var args = JSON.stringify(arguments);
+      //conditional that checks arugmentsList for function
+      // if it has function, return
+      // else store function, return
+      if (argumentsList.hasOwnProperty(args)) {
+        // do nothing
+      } else {
+        argumentsList[args] = func.apply(this, arguments);
+      }
+
+      return argumentsList[args];
+    };
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -302,6 +353,18 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+
+    var argArr = [];
+
+    for ( var i = 2; i < arguments.length; i++) {
+      argArr.push(arguments[i]);
+    }
+
+
+
+    setTimeout(function() {
+      func.apply(this, argArr);
+    }, wait);
   };
 
 
@@ -316,6 +379,12 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var randomArr = array.slice(0);
+
+    return randomArr.sort(function() {
+      return Math.random();
+    });
+
   };
 
 
